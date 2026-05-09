@@ -6,14 +6,13 @@
 
     Modelos Estocásticos y Heurísticos para la Industria
 
-    Caso: Diseño de una heurística para la preparación de pedidos en almacén.
-        Punto 4 implementación de la solución
+    Caso: Diseño de una heurística para asignación de empleados 
         
             Estudiantes:
         Melany Vargas Blanco C28100 
         Britny Mendoza Murillo C14736
         Raúl Evelio Fernndez Vargas C02975  
-        Joseph Alpizar Alpizar C00240
+        Joseph Alpizar Alpizar C00240 
 
         Profesor: Ronny Pacheco Segura 
  
