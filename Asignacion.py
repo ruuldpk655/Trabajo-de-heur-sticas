@@ -19,8 +19,6 @@
                     I-2026
 '''
 
-'''Nota importante, todo lo que parece código pero esta como comentario son pruebas que se hicierón, estan de esa forma por aquello que se deba hacer pruebas
-en caso de querer cambiar el codigo o ver cosas con el'''
 # Muchos comentarios son como son para alegrar el momento mientras se hace el código. No tomar personal. 
 
 # Inicio del código
@@ -80,19 +78,8 @@ try:
         distribucion= random.sample(trabajadores, k = base)
         # Devolver distribución
         return distribucion
-
-    def comparar_padres_identicos(padre, madre):
-        '''Esta función se encagra de ver que si dos padres son igales entre sí'''
-        # Evaluar condición de iguladad:
-        condicion = 0
-        for i in range(0,len(padre)):
-            if padre[i] == madre[i]:
-                condicion += 1
-        if condicion == len(padre): # Si son igaules se devulve que los son y si no, pues no.
-            return "iguales"
-        else:
-            return "diferentes"
-            
+    
+    # Crear función para hacer crossover     
     def crossover_ox(padre,madre):
         ''' Esta función se encarga de hacer un crosover entre dos padres en la cual
         se obta por preserva simpre la priemra mitada del padre y completar con lo que sobra de la madre o segundo padre'''
@@ -113,7 +100,7 @@ try:
         # Delvolver el hijo
         return hijo
 
-
+    # Crear función para hacer mutación
     def mutacion_swatt(niño, radiacion):
         '''Esta función se encarga de realizar  mutaciones simpre que 
         el nivel de radiación, probabilidad, aleatroio al que se expone la descendencia es mayor 
@@ -123,32 +110,27 @@ try:
             niño[i], niño[j] = niño[j], niño[i]
         return niño
     
-
+    # Crear función para torneo
     def torneo(poblacion, distancias, k):
-        """
-        Selección por torneo.
-        poblacion: La lista de rutas actuales.
-        distancias: Una lista con la distancia total de cada ruta en la población.
-        k: El tamaño del torneo (cuántos compiten).
-        """
-        # 1. Elegir k índices al azar de la población
-        indices_participantes = random.sample(range(len(poblacion)), k)
-        
-        # 2. Encontrar cuál de esos participantes tiene la menor distancia
-        mejor_indice = indices_participantes[0]
-        for idx in indices_participantes:
-            if distancias[idx] < distancias[mejor_indice]:
-                mejor_indice = idx
-                
-        # 3. Devolver el ganador del torneo
-        return poblacion[mejor_indice]
+        """Esta función se encarga de hacer la selección de los elekntos d ela poblasción y poner los a compertir para decidir el mejor """
+        # Elegir a los peleaodres del  Tenkaichi Budōkai numero 21
+        peleadores = random.sample(range(len(poblacion)), k)
+        # Encontrra cual es Goku en esos participantes
+        # Ver el indice del priemer elemento de los peleadores
+        ganador = peleadores[0]
+        # Recorrer todos los peledores hasta hayar el que tiene mayor nivel de poder
+        for participante in peleadores:
+            if distancias[participante] < distancias[ganador]:
+                ganador = participante
+        # 3. Devolver el Maestro Roshi del torneo
+        return poblacion[ganador]
 
-            
+
     def proceso_algoritmo_genetico():
         """Hacer uso del algoritmo genetico de mejora para hayar cual es la ruta más corta 
-     para el ajente viajero. Con una población de 100 y 500 generaciones  """
+     para el ajente viajero. Con una población de 100 y 1000 generaciones  """
     
-        # Paso 1 crear una población de muchas combinaciones para tener un punto de partida
+        # Crear una población de muchas combinaciones para tener un punto de partida
         # Crear lista vacia con las muchas pisbles nuevas poblaciones
         poblaciones = []
         # Dar numero de individuos para hacer más general el código
@@ -161,25 +143,25 @@ try:
                 poblaciones.append(people)
                 contador = contador +1
         
-        # Paso 2 seleccioanr el mejor luego de una evolución de varias iteraciones. Apromadamente 50
+        # Seleccioanr el mejor luego de una evolución de varias iteraciones. Apromadamente 1000
         # nuemro de iteracioens 
         n_pruebas =1000
-        # Esto se hace para guardar el tiempo y posbles combinacioens en caso 
-        # de haber más de una buena combinación que arrogue el valor más pequeño
+        # Esto se hace para guardar el tiempo y posibles combinacioens en caso 
+        # de haber más de una buena combinación que arroge el valor más pequeño
         posibles_candidatos = []
         menor_peso = float('inf') # Se parte de infinito para luego ir decendiendo. 
-        
+        # Lista vacia para depseus realizar el gráfico
         valores = []
         for prueba in range(n_pruebas): 
-            # 1. Calculamos las distancias de la población actual (Necesario para el torneo)
+            # Caluclar el valor de los pesos. 
             distancias_poblacion = [calcular_wi(ind) for ind in poblaciones]
             
-            # 2. Encontrar el mejor de momento
+            # Encontrar el menor peso de momento
             menor_peso_gen = min(distancias_poblacion)
             indice_mejor = distancias_poblacion.index(menor_peso_gen)
             mejor_de_momento = poblaciones[indice_mejor]
 
-            # Actualizar el récord global si es necesario
+            # Actualizar cual es el mejor de momento
             if menor_peso_gen < menor_peso:
                 menor_peso = menor_peso_gen
                 posibles_candidatos = [mejor_de_momento[:]]
@@ -187,78 +169,61 @@ try:
                 if mejor_de_momento not in posibles_candidatos:
                     posibles_candidatos.append(mejor_de_momento[:])
 
-            print(f"Generación: {prueba + 1} | Menor Peso wiTi: {menor_peso}")
+            print(f"Se va en generación: {prueba + 1}. Con el  menor peso wiTi: {menor_peso} de momento")
             
-            # 3. Crear la nueva población
+            # Crear la nueva población
             nueva_poblacion = []
             nueva_poblacion.append(mejor_de_momento) # Elitismo
-            
+            # Crar una nueva población igual de grande que la primera
             while len(nueva_poblacion) < monton:
-                # Llamada correcta a torneo con k=3
+                # Realizar la escogencia de padres
                 progenitor1 = torneo(poblaciones, distancias_poblacion, k=3)
                 progenitor2 = torneo(poblaciones, distancias_poblacion, k=3)
-                
+                # Hacer el crossover y la mutación
                 resultado = crossover_ox(progenitor1, progenitor2)
                 resultado = mutacion_swatt(resultado, 0.2)
-                
+                # Hacer toda la población distinta
                 if resultado not in nueva_poblacion:
                     nueva_poblacion.append(resultado)
             
-            # 4. Reemplazar población vieja con la nueva
+            # Reemplazar población vieja con la nueva
             poblaciones = nueva_poblacion
             valores.append(menor_peso)
-        
-        
+        # Variable con numero de genraciones para el grafico
         x = list(range(1, len(valores) + 1))
 
         # Mostrar los resultados
         print()
         print(f"El valor menor de peso wiTi obtendio es de {menor_peso}.")
         print()
-        print("Y se obtiene con las sigueinte combinación:")
+        print("Y se obtiene con la sigueinte combinación:")
         print()
         contador_1 = 1
         for combinacion_miedo in posibles_candidatos:
             arreglo_miedo = " - ".join(map(str, combinacion_miedo))
             print(f" {contador_1}:  {arreglo_miedo}")
             contador_1 += 1
-    
-        plt.plot(x, valores)
+        # Realizar gráfico
+        plt.plot(x, valores, color = "purple")
         plt.xlabel("Generaciones")
         plt.ylabel("Peso total wiTi")
         plt.title("Cambio con las generaciones")
         plt.grid()
         plt.show()
-    
-
-    #a= ruleta()
-    #print(a)
-    #b = crossover_ox(a[0],a[1])
-    #print(b)
-    #c =  mutacion_swatt(b,0.1)
-    #print(c)
-    #generico = crear_padres()
-    #generico2 = crear_padres()
-    #a = comparar_padres_identicos(generico, generico2)
-    #print(generico)
-    #print(generico2)
-    #print(a)
-    #print(f"El tiempo para el orden de {generico} es {calcular_wi(generico)} s  ")
-    #print(f"El tiempo para el orden de {generico2} es {calcular_wi(generico2)} s  ")
-    #print(f"El tiempo para el orden de {a[0]} es {calcular_wi(a[0])} s  ")
-    
-    #print(f"El tiempo para el orden de {a[1]} es {calcular_wi(a[1])} s  ")
-
+        
     # Llamar al algoritmo genetico como la unica función que se requiere llamar
     proceso_algoritmo_genetico()
 
-  
 except: 
-    # En caso de algun problema notificar al usario de forma amable. 
+      # En caso de algun problema notificar al usario de forma muy amable. 
     print()
-    print("Se equivoco en el nombre del archivo, no esta en misma carpeta o ese no tiene el formato que corresponde.")
-    print("Ponga bien la extensión .xlsx porque el problema es de capa 8 y no esta en el software sino entre el escritorio y la silla") # Esto es una proyectada. 
+    print("Se equivoco en el nombre del archivo, no esta en misma carpeta o ese no tiene el formato que corresponde")
     print()
+    print("Ponga bien la extensión .xlsx, porque el problema es de capa 8 y no esta en el software sino entre el escritorio y la silla.".upper()) 
+    print()
+    print("Por ello Usuario lea bien por favor, nada le cuesta".upper())
+    print()
+
 
 
 
